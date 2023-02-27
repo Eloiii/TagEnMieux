@@ -1,5 +1,6 @@
 package com.example.tagenmieuxcompose
 
-import java.util.Date
+import java.time.LocalDateTime
+import java.time.LocalTime
 
-class StopData(name: String, realTime: Number, arrivalTime: Date, scheduledArrival: Date)
+class StopData(name: String, realTime: Boolean, arrivalTime: LocalDateTime, scheduledArrival: LocalDateTime)

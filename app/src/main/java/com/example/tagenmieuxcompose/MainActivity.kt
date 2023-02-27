@@ -24,12 +24,15 @@ import java.time.LocalDate
 class MainActivity : ComponentActivity() {
 
     private lateinit var queue: RequestQueue
-    private lateinit var stopData: StopData
+    private lateinit var stopData: ArrayList<StopData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         queue = Volley.newRequestQueue(this)
         super.onCreate(savedInstanceState)
-        getDataFromApi("SEM:GENMAISONCO", "SEM:14:0:14_R_36")
+        Thread {
+            getDataFromApi("SEM:GENMAISONCO", "SEM:D:1:D_A_4")
+        }.start()
+
         setContent {
             TagEnMieuxComposeTheme {
                 // A surface container using the 'background' color from the theme
@@ -37,6 +40,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    //TODO mutableStateOf() voir ça la le truc
                     Scaffold(
                         floatingActionButton = {
                             FloatingActionButton(
@@ -60,8 +64,8 @@ class MainActivity : ComponentActivity() {
                         }
                     ) { values ->
                         LazyColumn(contentPadding = values, modifier = Modifier) {
-                            items(10) {
-                                StopCard(title = "un super long ", description = "test", modifier = Modifier.padding(16.dp))
+                            items(stopData.size) {
+                                StopCard(title = stopData[0].name, description = "test", modifier = Modifier.padding(16.dp))
                             }
                         }
                     }
@@ -104,8 +108,9 @@ class MainActivity : ComponentActivity() {
 
             val arrivalTime = if (realTime) LocalDate.now().atTime(h_realtime, m_realtime,s_realtime) else LocalDate.now().atTime(h_scheduled, m_scheduled, s_scheduled)
             val scheduledArrival = LocalDate.now().atTime(h_scheduled, m_scheduled, s_scheduled)
-            stopData = StopData(name, realTime, arrivalTime, scheduledArrival)
-            Log.d("DEBUG", stopData.name)
+            val stopData = StopData(name, realTime, arrivalTime, scheduledArrival)
+
+            this.stopData.add(stopData)
         }))
     }
 
